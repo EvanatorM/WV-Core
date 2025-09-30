@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_library(WVCore STATIC
-    src/Test.cpp
+    src/temp.cpp
 )
 
 target_include_directories(WVCore PUBLIC 
@@ -14,3 +14,14 @@ target_include_directories(WVCore PUBLIC
 )
 
 target_compile_features(WVCore PUBLIC cxx_std_20)
+
+# Add platform-specific preprocessor definitions
+if(WIN32)
+    target_compile_definitions(WVCore PUBLIC PLATFORM_WINDOWS)
+elseif(APPLE)
+    target_compile_definitions(WVCore PUBLIC PLATFORM_MACOS)
+elseif(UNIX)
+    target_compile_definitions(WVCore PUBLIC PLATFORM_LINUX)
+else()
+    message(FATAL_ERROR "Unknown platform!")
+endif()
