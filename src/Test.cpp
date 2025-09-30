@@ -6,6 +6,6 @@ namespace WillowVox::Core
 {
     void Test()
     {
-        std::cout << "Running Core Test..." << std::endl;
+        std::cout << "Running Core Update Test..." << std::endl;
     }
 }
