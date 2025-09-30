@@ -9,8 +9,8 @@ add_library(WV_CORE STATIC
 )
 
 target_include_directories(WV_CORE PUBLIC 
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>    
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>    
 )
 
 target_compile_features(WV_CORE PUBLIC cxx_std_20)
