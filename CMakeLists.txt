@@ -24,9 +24,12 @@ _add_engine_git_module(glad https://github.com/Dav1dde/glad.git 5bf3eda)
 
 # Create library
 add_library(WVCore STATIC
-    src/temp.cpp
+    src/app/App.cpp
     ${glad_SOURCE_DIR}/src/glad.c
 )
+
+#target_precompile_headers(WVCore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/wv/wvpch.h)
+#target_precompile_headers(WVCore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/wv/core.h)
 
 target_include_directories(WVCore PUBLIC 
     $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
