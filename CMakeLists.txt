@@ -1,20 +1,8 @@
 cmake_minimum_required(VERSION 3.24)
-project(WVCore LANGUAGES CXX)
+project(WVCore LANGUAGES CXX C)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-
-add_library(WVCore STATIC
-    src/temp.cpp
-)
-
-target_include_directories(WVCore PUBLIC 
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
-    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>    
-)
-
-target_compile_features(WVCore PUBLIC cxx_std_20)
 
 # Define macro for importing GitHub repos
 include(FetchContent)
@@ -30,8 +18,35 @@ macro(_add_engine_git_module NAME REPO COMMIT)
   FetchContent_MakeAvailable(${NAME})
 endmacro()
 
+
+# Add glad
+_add_engine_git_module(glad https://github.com/Dav1dde/glad.git c)
+
+# Create library
+add_library(WVCore STATIC
+    src/temp.cpp
+    ${glad_SOURCE_DIR}/src/glad.c
+)
+
+target_include_directories(WVCore PUBLIC 
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>    
+)
+
+target_compile_features(WVCore PUBLIC cxx_std_20)
+
+# Finish adding glad
+target_include_directories(WVCore PUBLIC ${glad_SOURCE_DIR}/include)
+
+# Add glm
 _add_engine_git_module(GLM https://github.com/g-truc/glm.git master)
 target_include_directories(WVCore PUBLIC ${glm_SOURCE_DIR})
+
+# Add GLFW
+_add_engine_git_module(GLFW https://github.com/glfw/glfw.git master)
+target_link_libraries(WVCore PUBLIC glfw)
+target_include_directories(WVCore PUBLIC ${glfw_SOURCE_DIR}/include)
+
 # Add platform-specific preprocessor definitions
 if(WIN32)
     target_compile_definitions(WVCore PUBLIC PLATFORM_WINDOWS)
