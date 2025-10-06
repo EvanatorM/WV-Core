@@ -24,6 +24,8 @@ _add_engine_git_module(glad https://github.com/Dav1dde/glad.git 5bf3eda)
 
 # Create library
 add_library(WVCore STATIC
+    src/Logger.cpp
+
     src/app/App.cpp
     ${glad_SOURCE_DIR}/src/glad.c
 )
