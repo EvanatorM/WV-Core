@@ -59,7 +59,6 @@ namespace WillowVox
         static void EngineError(const char* msg, Args... args)
         {
             Log(LOG_COLOR_ENGINE_ERROR, true, "ERROR: ", msg, args...);
-
         }
         
         template <typename... Args>
@@ -105,9 +104,9 @@ namespace WillowVox
             SetColor(15, 0);
             printf("\n");
             #else
-            printf(LOG_COLOR_RESET "[%02d:%02d:%02d] ", now.tm_hour, now.tm_min, now.tm_sec);
+            printf(colorType "[%02d:%02d:%02d %s] %s", now.tm_hour, now.tm_min, now.tm_sec, (engine ? "Engine" : "App"), pre);
             printf(msg, args...);
-            printf(LOG_COLOR_RESET "\n");
+            printf(colorType "\n");
             #endif
         }
 
