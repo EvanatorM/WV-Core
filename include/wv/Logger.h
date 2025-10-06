@@ -104,9 +104,9 @@ namespace WillowVox
             SetColor(15, 0);
             printf("\n");
             #else
-            printf(colorType "[%02d:%02d:%02d %s] %s", now.tm_hour, now.tm_min, now.tm_sec, (engine ? "Engine" : "App"), pre);
+            printf("%s[%02d:%02d:%02d %s] %s", colorType, now.tm_hour, now.tm_min, now.tm_sec, (engine ? "Engine" : "App"), pre);
             printf(msg, args...);
-            printf(colorType "\n");
+            printf(LOG_COLOR_RESET "\n");
             #endif
         }
 
