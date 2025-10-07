@@ -27,6 +27,10 @@ add_library(WVCore STATIC
     src/Logger.cpp
 
     src/app/App.cpp
+
+    src/rendering/Renderer.cpp
+    src/rendering/Window.cpp
+
     ${glad_SOURCE_DIR}/src/glad.c
 )
 
@@ -44,11 +48,11 @@ target_compile_features(WVCore PUBLIC cxx_std_20)
 target_include_directories(WVCore PUBLIC ${glad_SOURCE_DIR}/include)
 
 # Add glm
-_add_engine_git_module(GLM https://github.com/g-truc/glm.git 0af55cc)
+_add_engine_git_module(GLM https://github.com/g-truc/glm.git 1.0.1)
 target_include_directories(WVCore PUBLIC ${glm_SOURCE_DIR})
 
 # Add GLFW
-_add_engine_git_module(GLFW https://github.com/glfw/glfw.git 7b6aead)
+_add_engine_git_module(GLFW https://github.com/glfw/glfw.git 3.4)
 target_link_libraries(WVCore PUBLIC glfw)
 target_include_directories(WVCore PUBLIC ${glfw_SOURCE_DIR}/include)
 
