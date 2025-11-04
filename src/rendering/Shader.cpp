@@ -9,8 +9,8 @@
 
 namespace WillowVox
 {
-	Shader::Shader(const char* vertexShaderPath, const char* fragmentShaderPath)
-	{
+    std::shared_ptr<Shader> Shader::FromFiles(const char* vertexShaderPath, const char* fragmentShaderPath)
+    {
         // 1. retrieve the vertex/fragment source code from filePath
         std::string vertexCode;
         std::string fragmentCode;
@@ -72,24 +72,34 @@ namespace WillowVox
         }
 
         // shader program
-        _programId = glCreateProgram();
-        glAttachShader(_programId, vertex);
-        glAttachShader(_programId, fragment);
-        glLinkProgram(_programId);
+        unsigned int programId = glCreateProgram();
+        glAttachShader(programId, vertex);
+        glAttachShader(programId, fragment);
+        glLinkProgram(programId);
         // print linking errors if any
-        glGetProgramiv(_programId, GL_LINK_STATUS, &success);
+        glGetProgramiv(programId, GL_LINK_STATUS, &success);
         if (!success)
         {
-            glGetProgramInfoLog(_programId, 512, nullptr, infoLog);
+            glGetProgramInfoLog(programId, 512, nullptr, infoLog);
             Logger::Error("Error linking shader program: %s", infoLog);
         }
 
         // delete the shaders
         glDeleteShader(vertex);
         glDeleteShader(fragment);
-	}
 
-    Shader::Shader(const char* vertexShaderCode, const char* fragmentShaderCode, bool codePassed)
+        std::shared_ptr<Shader> shader = std::make_shared<Shader>(programId);
+        return shader;
+    }
+
+    std::shared_ptr<Shader> Shader::FromFiles(const std::string& name)
+    {
+        std::string vertPath = "assets/shaders/" + name + ".vert";
+        std::string fragPath = "assets/shaders/" + name + ".frag";
+        return Shader::FromFiles(vertPath.c_str(), fragPath.c_str());
+    }
+
+    std::shared_ptr<Shader> Shader::FromSource(const char* vertexShaderCode, const char* fragmentShaderCode)
     {
         // 2. compile shaders
         unsigned int vertex, fragment;
@@ -121,21 +131,24 @@ namespace WillowVox
         }
 
         // shader program
-        _programId = glCreateProgram();
-        glAttachShader(_programId, vertex);
-        glAttachShader(_programId, fragment);
-        glLinkProgram(_programId);
+        unsigned int programId = glCreateProgram();
+        glAttachShader(programId, vertex);
+        glAttachShader(programId, fragment);
+        glLinkProgram(programId);
         // print linking errors if any
-        glGetProgramiv(_programId, GL_LINK_STATUS, &success);
+        glGetProgramiv(programId, GL_LINK_STATUS, &success);
         if (!success)
         {
-            glGetProgramInfoLog(_programId, 512, nullptr, infoLog);
+            glGetProgramInfoLog(programId, 512, nullptr, infoLog);
             Logger::Error("Error linking shader program: %s", infoLog);
         }
 
         // delete the shaders
         glDeleteShader(vertex);
         glDeleteShader(fragment);
+
+        std::shared_ptr<Shader> shader = std::make_shared<Shader>(programId);
+        return shader;
     }
 
     Shader::~Shader()

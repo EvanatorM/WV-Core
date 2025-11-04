@@ -1,6 +1,6 @@
 #pragma once
 
-#include <wv/assets/IAssetProvider.h>
+#include <wv/assets/AssetProvider.h>
 #include <wv/wvpch.h>
 #include <typeindex>
 
@@ -12,23 +12,22 @@ namespace WillowVox
         static AssetManager& GetInstance();
 
         template<typename T>
-        void GetAsset(const std::string& assetName)
+        std::shared_ptr<T> GetAsset(const std::string& name)
         {
-            IAssetProvider* provider = nullptr;
+            // Get the asset provider for the given type
+            AssetProvider<T>* provider = nullptr;
             auto it = m_AssetTypes.find(typeid(T));
             if (it != m_AssetTypes.end())
-            {
-                provider = it->second.get();
-                // Use provider to get the asset
-            }
+                provider = static_cast<AssetProvider<T>*>(it->second.get());
             else
             {
                 // Create and register a new provider for this asset type
-                m_AssetTypes[typeid(T)] = std::make_unique<IAssetProvider>();
-                provider = m_AssetTypes[typeid(T)].get();
+                m_AssetTypes[typeid(T)] = std::make_unique<AssetProvider<T>>();
+                provider = static_cast<AssetProvider<T>*>(m_AssetTypes[typeid(T)].get());
             }
 
-
+            // Get the asset from the provider
+            return provider->GetAsset(name);
         }
 
     private:

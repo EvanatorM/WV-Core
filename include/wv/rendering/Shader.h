@@ -1,5 +1,6 @@
 #pragma once
 
+#include <wv/assets/AssetLoader.h>
 #include <wv/wvpch.h>
 
 namespace WillowVox
@@ -7,8 +8,11 @@ namespace WillowVox
     class Shader
     {
     public:
-        Shader(const char* vertexShaderPath, const char* fragmentShaderPath);
-        Shader(const char* vertexShaderCode, const char* fragmentShaderCode, bool codePassed);
+        static std::shared_ptr<Shader> FromFiles(const char* vertexShaderPath, const char* fragmentShaderPath);
+        static std::shared_ptr<Shader> FromFiles(const std::string& name);
+        static std::shared_ptr<Shader> FromSource(const char* vertexShaderCode, const char* fragmentShaderCode);
+
+        Shader(unsigned int programId) : _programId(programId) {}
         ~Shader();
 
         void Bind();
@@ -26,5 +30,13 @@ namespace WillowVox
 
     private:
         unsigned int _programId;
+    };
+
+    template<> struct AssetLoader<Shader>
+    {
+        static std::shared_ptr<Shader> Load(const std::string& name)
+        {
+            return Shader::FromFiles(name);
+        }
     };
 }

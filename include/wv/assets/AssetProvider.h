@@ -1,31 +1,38 @@
 #pragma once
 
-#include <wv/assets/IAssetProvider.h>
+#include <wv/assets/AssetLoader.h>
+#include <wv/wvpch.h>
 
 namespace WillowVox
 {
+    class IAssetProvider
+    {
+    public:
+    };
+
     template<typename T>
     class AssetProvider : public IAssetProvider
     {
     public:
-        T GetAsset(const std::string& assetName)
+        std::shared_ptr<T> GetAsset(const std::string& name)
         {
-            auto it = m_Assets.find(assetName);
-            if (it != m_Assets.end())
-            {
+            auto it = m_assets.find(name);
+            if (it != m_assets.end())
                 return it->second;
-            }
             else
             {
-                T asset = LoadAsset(assetName);
-                m_Assets[assetName] = asset;
+                std::shared_ptr<T> asset = AssetLoader<T>::Load(name);
+                m_assets.emplace(name, asset);
                 return asset;
             }
         }
 
-        T LoadAsset(const std::string& assetName);
+        void AddAsset(const std::string& name, std::shared_ptr<T> asset)
+        {
+            m_assets.emplace(name, asset);
+        }
 
     private:
-        std::unordered_map<std::string, T> m_Assets;
+        std::unordered_map<std::string, std::shared_ptr<T>> m_assets;
     };
 }

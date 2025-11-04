@@ -28,7 +28,10 @@ add_library(WVCore STATIC
 
     src/app/App.cpp
 
+    src/assets/AssetManager.cpp
+
     src/rendering/Renderer.cpp
+    src/rendering/Shader.cpp
     src/rendering/Window.cpp
 
     ${glad_SOURCE_DIR}/src/glad.c
