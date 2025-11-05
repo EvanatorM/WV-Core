@@ -30,9 +30,12 @@ add_library(WVCore STATIC
 
     src/assets/AssetManager.cpp
 
+    src/rendering/ElementBuffer.cpp
     src/rendering/Renderer.cpp
     src/rendering/Shader.cpp
     src/rendering/Texture.cpp
+    src/rendering/VertexArrayObject.cpp
+    src/rendering/VertexBuffer.cpp
     src/rendering/Window.cpp
 
     ${glad_SOURCE_DIR}/src/glad.c
