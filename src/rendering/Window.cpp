@@ -6,14 +6,13 @@
 
 namespace WillowVox
 {   
-    void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-    {
-        glViewport(0, 0, width, height);
-    }
+    Window* Window::m_instance = nullptr;
 
     Window::Window(int width, int height, const char* title)
     {
+        m_windowSize = { width, height };
         m_window = glfwCreateWindow(width, height, title, NULL, NULL);
+        glfwSetWindowUserPointer(m_window, this);
         if (m_window == NULL)
         {
             Logger::Error("Failed to create GLFW window");
@@ -29,7 +28,11 @@ namespace WillowVox
             return;
         }
 
-        glfwSetFramebufferSizeCallback(m_window, framebuffer_size_callback);
+        glfwSetFramebufferSizeCallback(m_window, [](GLFWwindow* window, int width, int height) {
+            auto self = static_cast<Window*>(glfwGetWindowUserPointer(window));
+            glViewport(0, 0, width, height);
+            self->m_windowSize = { width, height };
+        });
     }
 
     Window::~Window()
