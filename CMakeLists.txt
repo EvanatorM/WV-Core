@@ -32,6 +32,7 @@ add_library(WVCore STATIC
 
     src/rendering/Renderer.cpp
     src/rendering/Shader.cpp
+    src/rendering/Texture.cpp
     src/rendering/Window.cpp
 
     ${glad_SOURCE_DIR}/src/glad.c
@@ -58,6 +59,10 @@ target_include_directories(WVCore PUBLIC ${glm_SOURCE_DIR})
 _add_engine_git_module(GLFW https://github.com/glfw/glfw.git 3.4)
 target_link_libraries(WVCore PUBLIC glfw)
 target_include_directories(WVCore PUBLIC ${glfw_SOURCE_DIR}/include)
+
+# Add STB Image
+_add_engine_git_module(STBImage https://github.com/nothings/stb.git f1c79c0)
+target_include_directories(WVCore PUBLIC ${stbimage_SOURCE_DIR})
 
 # Add platform-specific preprocessor definitions
 if(WIN32)
