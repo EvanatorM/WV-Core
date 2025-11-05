@@ -25,6 +25,8 @@ namespace WillowVox
 
         glm::ivec2 GetWindowSize() { return m_windowSize; }
 
+        GLFWwindow* GetWindow() { return m_window; }
+
         void Clear();
         void PollEvents();
         void SwapBuffers();
