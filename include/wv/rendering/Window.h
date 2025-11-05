@@ -31,6 +31,8 @@ namespace WillowVox
 
         bool ShouldClose() const;
 
+        friend class Input;
+
     private:
         static Window* m_instance;
 

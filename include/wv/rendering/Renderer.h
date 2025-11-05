@@ -6,6 +6,7 @@ namespace WillowVox
     {
     public:
         static void Init();
+        static void PostWindowInit();
         static void Shutdown();
 
         static float GetTime();

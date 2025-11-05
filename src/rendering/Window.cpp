@@ -3,6 +3,7 @@
 #include <wv/Logger.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <wv/rendering/Renderer.h>
 
 namespace WillowVox
 {   
@@ -33,6 +34,8 @@ namespace WillowVox
             glViewport(0, 0, width, height);
             self->m_windowSize = { width, height };
         });
+
+        Renderer::PostWindowInit();
     }
 
     Window::~Window()
@@ -47,7 +50,7 @@ namespace WillowVox
 
     void Window::Clear()
     {
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
     void Window::PollEvents()

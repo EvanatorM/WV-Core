@@ -3,6 +3,7 @@
 #include <wv/Logger.h>
 #include <wv/rendering/Renderer.h>
 #include <wv/rendering/Window.h>
+#include <wv/input/Input.h>
 #include <iostream>
 
 namespace WillowVox
@@ -18,6 +19,8 @@ namespace WillowVox
         Window::InitWindow(1280, 720, "WillowVox Engine");
         auto& window = Window::GetInstance();
         window.SetBackgroundColor(0.1f, 0.1f, 0.1f, 1.0f);
+
+        Input::Init();
     
         Start();
 
@@ -37,7 +40,8 @@ namespace WillowVox
 
             Render();
 
-            // End-of-frame rendering steps
+            // End-of-frame steps
+            Input::ResetStates();
             window.SwapBuffers();
             window.PollEvents();
         }

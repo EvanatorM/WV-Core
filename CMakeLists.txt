@@ -30,6 +30,8 @@ add_library(WVCore STATIC
 
     src/assets/AssetManager.cpp
 
+    src/input/Input.cpp
+
     src/rendering/Camera.cpp
     src/rendering/ElementBuffer.cpp
     src/rendering/Renderer.cpp
