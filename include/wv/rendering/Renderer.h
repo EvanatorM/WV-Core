@@ -7,5 +7,7 @@ namespace WillowVox
     public:
         static void Init();
         static void Shutdown();
+
+        static float GetTime();
     };
 }

@@ -7,25 +7,37 @@
 
 namespace WillowVox
 {
+    float App::m_deltaTime = 0;
+    float App::m_lastFrame = 0;
+
     void App::Run()
     {
         Logger::Log("Using WillowVox Engine");     
         
         Renderer::Init();
         Window::InitWindow(1280, 720, "WillowVox Engine");
-        Window& window = Window::GetInstance();
+        auto& window = Window::GetInstance();
         window.SetBackgroundColor(0.1f, 0.1f, 0.1f, 1.0f);
     
         Start();
 
         while(!window.ShouldClose())
         {
+            // Calculate deltaTime
+            float frameStartTime = Renderer::GetTime();
+            float currentFrame = frameStartTime;
+            m_deltaTime = currentFrame - m_lastFrame;
+            m_lastFrame = currentFrame;
+
+            // Clear window
             window.Clear();
 
+            // Client app logic
             Update();
 
             Render();
 
+            // End-of-frame rendering steps
             window.SwapBuffers();
             window.PollEvents();
         }

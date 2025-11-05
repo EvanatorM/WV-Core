@@ -18,4 +18,9 @@ namespace WillowVox
     {
         glfwTerminate();
     }
+
+    float Renderer::GetTime()
+    {
+        return glfwGetTime();
+    }
 }
