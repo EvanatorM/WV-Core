@@ -2,6 +2,10 @@
 
 namespace WillowVox
 {
+    extern const char* appWindowName;
+    extern int appDefaultWindowX;
+    extern int appDefaultWindowY;
+
     class App
     {
     public:

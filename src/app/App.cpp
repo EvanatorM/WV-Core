@@ -16,7 +16,7 @@ namespace WillowVox
         Logger::Log("Using WillowVox Engine");     
         
         Renderer::Init();
-        Window::InitWindow(1280, 720, "WillowVox Engine");
+        Window::InitWindow(appDefaultWindowX, appDefaultWindowY, appWindowName);
         auto& window = Window::GetInstance();
         window.SetBackgroundColor(0.1f, 0.1f, 0.1f, 1.0f);
 
