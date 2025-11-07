@@ -8,8 +8,8 @@ namespace WillowVox
     class Camera
     {
     public:
-        Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 direction = glm::vec3(0, -90.0f, 0));
-        Camera(float posX, float posY, float posZ, float roll, float pitch, float yaw);
+        Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 direction = glm::vec3(0, -90.0f, 0), float fov = 70.0f);
+        Camera(float posX, float posY, float posZ, float roll, float pitch, float yaw, float fov = 70.0f);
 
         glm::vec3 Front();
         glm::vec3 Right();

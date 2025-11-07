@@ -2,15 +2,15 @@
 
 namespace WillowVox
 {
-    Camera::Camera(glm::vec3 position, glm::vec3 direction) 
-        : m_window(Window::GetInstance()), m_position(position), m_direction(direction)
+    Camera::Camera(glm::vec3 position, glm::vec3 direction, float fov)
+        : m_window(Window::GetInstance()), m_position(position), m_direction(direction), m_fov(fov)
     {
 
     }
 
     // constructor with scalar values
-    Camera::Camera(float posX, float posY, float posZ, float roll, float pitch, float yaw)
-        : m_window(Window::GetInstance())
+    Camera::Camera(float posX, float posY, float posZ, float roll, float pitch, float yaw, float fov)
+        : m_window(Window::GetInstance()), m_fov(fov)
     {
         m_position = glm::vec3(posX, posY, posZ);
         m_direction = glm::vec3(pitch, yaw, roll);
