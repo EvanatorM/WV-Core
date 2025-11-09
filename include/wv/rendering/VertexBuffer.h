@@ -1,8 +1,6 @@
 #pragma once
 
 #include <wv/wvpch.h>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
 namespace WillowVox
 {

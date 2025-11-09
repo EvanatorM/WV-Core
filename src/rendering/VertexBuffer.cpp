@@ -1,4 +1,6 @@
 #include <wv/rendering/VertexBuffer.h>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 namespace WillowVox
 {
