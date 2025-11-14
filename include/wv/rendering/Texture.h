@@ -9,8 +9,10 @@ namespace WillowVox
     {
     public:
         static std::shared_ptr<Texture> FromName(const std::string& name);
+        static std::shared_ptr<Texture> FromData(const std::vector<unsigned char>& data, int width, int height);
 
         Texture(const char* path);
+        Texture(const std::vector<unsigned char>& data, int width, int height);
         ~Texture();
 
         enum TexSlot

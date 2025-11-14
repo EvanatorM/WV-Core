@@ -35,6 +35,13 @@ namespace WillowVox
             return std::make_shared<Texture>((path + ".hdr").c_str());
         else if (std::filesystem::exists(path + ".pic"))
             return std::make_shared<Texture>((path + ".pic").c_str());
+        else
+            return nullptr;
+    }
+
+    std::shared_ptr<Texture> Texture::FromData(const std::vector<unsigned char>& data, int width, int height)
+    {
+        return std::make_shared<Texture>(data, width, height);
     }
 
     Texture::Texture(const char* path)
@@ -66,6 +73,26 @@ namespace WillowVox
 
         // Free texture data
         stbi_image_free(data);
+    }
+
+    Texture::Texture(const std::vector<unsigned char>& data, int width, int height)
+    {
+        // Set texture dimensions
+        m_width = width;
+        m_height = height;
+
+        // Create texture
+        glGenTextures(1, &m_textureId);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_textureId);
+
+        // Set texture parameters
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        // Set texture data
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.data());
+        glGenerateMipmap(GL_TEXTURE_2D);
     }
 
     Texture::~Texture()

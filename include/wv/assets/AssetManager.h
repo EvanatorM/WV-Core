@@ -30,6 +30,25 @@ namespace WillowVox
             return provider->GetAsset(name);
         }
 
+        template<typename T>
+        void AddAsset(const std::string& name, std::shared_ptr<T> asset)
+        {
+            // Get the asset provider for the given type
+            AssetProvider<T>* provider = nullptr;
+            auto it = m_AssetTypes.find(typeid(T));
+            if (it != m_AssetTypes.end())
+                provider = static_cast<AssetProvider<T>*>(it->second.get());
+            else
+            {
+                // Create and register a new provider for this asset type
+                m_AssetTypes[typeid(T)] = std::make_unique<AssetProvider<T>>();
+                provider = static_cast<AssetProvider<T>*>(m_AssetTypes[typeid(T)].get());
+            }
+
+            // Get the asset from the provider
+            provider->AddAsset(name, asset);
+        }
+
     private:
         std::unordered_map<std::type_index, std::unique_ptr<IAssetProvider>> m_AssetTypes;
     };
