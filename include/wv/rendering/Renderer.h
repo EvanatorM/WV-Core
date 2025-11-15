@@ -10,5 +10,11 @@ namespace WillowVox
         static void Shutdown();
 
         static float GetTime();
+
+        static void SetVsync(bool enabled);
+        static bool VysncEnabled() { return m_vsyncEnabled; }
+
+    private:
+        static bool m_vsyncEnabled;
     };
 }

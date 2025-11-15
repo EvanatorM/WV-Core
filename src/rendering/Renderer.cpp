@@ -5,12 +5,16 @@
 
 namespace WillowVox
 {
+    bool Renderer::m_vsyncEnabled = true;
+
     void Renderer::Init()
     {
         glfwInit();
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+        Renderer::SetVsync(m_vsyncEnabled);
     }
 
     void Renderer::PostWindowInit()
@@ -29,5 +33,11 @@ namespace WillowVox
     float Renderer::GetTime()
     {
         return glfwGetTime();
+    }
+
+    void Renderer::SetVsync(bool enabled)
+    {
+        m_vsyncEnabled = enabled;
+        glfwSwapInterval(enabled ? 1 : 0);
     }
 }

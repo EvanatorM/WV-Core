@@ -13,7 +13,7 @@ namespace WillowVox
 
     void App::Run()
     {
-        Logger::Log("Using WillowVox Engine");     
+        Logger::EngineLog("Using WillowVox Engine");     
         
         Renderer::Init();
         Window::InitWindow(appDefaultWindowX, appDefaultWindowY, appWindowName);
