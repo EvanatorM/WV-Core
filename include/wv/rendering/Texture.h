@@ -10,6 +10,7 @@ namespace WillowVox
     public:
         static std::shared_ptr<Texture> FromName(const std::string& name);
         static std::shared_ptr<Texture> FromData(const std::vector<unsigned char>& data, int width, int height);
+        static std::vector<unsigned char> GetTextureData(const std::string& path, int& width, int& height);
 
         Texture(const char* path);
         Texture(const std::vector<unsigned char>& data, int width, int height);

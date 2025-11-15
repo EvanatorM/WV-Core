@@ -44,6 +44,16 @@ namespace WillowVox
         return std::make_shared<Texture>(data, width, height);
     }
 
+    std::vector<unsigned char> Texture::GetTextureData(const std::string& path, int& width, int& height)
+    {
+        // Load texture data
+        stbi_set_flip_vertically_on_load(true);
+
+        int nrChannels;
+        unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
+        return std::vector<unsigned char>(data, data + (width * height * nrChannels));
+    }
+
     Texture::Texture(const char* path)
     {
         // Load texture data
