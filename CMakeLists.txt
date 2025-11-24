@@ -41,6 +41,8 @@ add_library(WVCore STATIC
     src/rendering/VertexBuffer.cpp
     src/rendering/Window.cpp
 
+    src/threading/ThreadPool.cpp
+
     ${glad_SOURCE_DIR}/src/glad.c
 )
 
