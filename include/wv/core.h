@@ -20,3 +20,5 @@
 #include <wv/rendering/Texture.h>
 #include <wv/rendering/VertexArrayObject.h>
 #include <wv/rendering/Window.h>
+
+#include <wv/threading/ThreadPool.h>
