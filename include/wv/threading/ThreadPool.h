@@ -1,12 +1,16 @@
 #pragma once
 
+#include <concurrentqueue.h>
 #include <wv/wvpch.h>
+#include <atomic>
 
 namespace WillowVox
 {
     class ThreadPool
     {
     public:
+        ThreadPool(int initialJobQueueCapacity);
+        ThreadPool() = default;
         void Start(int numThreads);
         void QueueJob(const std::function<void()>& job, bool highPriority = false);
         void Stop();
@@ -14,11 +18,10 @@ namespace WillowVox
     private:
         void ThreadLoop();
 
-        bool m_shouldTerminate = false;
-        std::mutex m_queueMutex;
+        std::atomic<bool> m_shouldTerminate;
         std::condition_variable m_mutexCondition;
         std::vector<std::thread> m_threads;
-        std::queue<std::function<void()>> m_lowPriorityJobs;
-        std::queue<std::function<void()>> m_highPriorityJobs;
+        moodycamel::ConcurrentQueue<std::function<void()>> m_lowPriorityJobs;
+        moodycamel::ConcurrentQueue<std::function<void()>> m_highPriorityJobs;
     };
 }

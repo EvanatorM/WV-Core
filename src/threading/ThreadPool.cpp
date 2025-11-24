@@ -4,6 +4,9 @@
 
 namespace WillowVox
 {
+    ThreadPool::ThreadPool(int initialJobQueueCapacity = 0)
+        : m_shouldTerminate(false), m_highPriorityJobs(initialJobQueueCapacity), m_lowPriorityJobs(initialJobQueueCapacity) {}
+
     void ThreadPool::Start(int numThreads)
     {
         for (int i = 0; i < numThreads; i++)
@@ -13,21 +16,18 @@ namespace WillowVox
     void ThreadPool::QueueJob(const std::function<void()>& job, bool highPriority)
     {
         {
-            std::unique_lock<std::mutex> lock(m_queueMutex);
             if (highPriority)
-                m_highPriorityJobs.push(job);
+                m_highPriorityJobs.enqueue(job);
             else
-                m_lowPriorityJobs.push(job);
+                m_lowPriorityJobs.enqueue(job);
         }
-        m_mutexCondition.notify_one();
+        //m_mutexCondition.notify_one();
     }
 
     void ThreadPool::Stop()
     {
-        {
-            std::unique_lock<std::mutex> lock(m_queueMutex);
-            m_shouldTerminate = true;
-        }
+        m_shouldTerminate = true;
+
         m_mutexCondition.notify_all();
         for (std::thread& activeThread : m_threads)
             activeThread.join();
@@ -41,21 +41,18 @@ namespace WillowVox
         {
             std::function<void()> job;
             {
-                std::unique_lock<std::mutex> lock(m_queueMutex);
-                m_mutexCondition.wait(lock, [this] {
-                    return !m_highPriorityJobs.empty() || !m_lowPriorityJobs.empty() || m_shouldTerminate;
-                });
+                /*m_mutexCondition.wait(lock, [this] {
+                    return !m_highPriorityJobs.() || !m_lowPriorityJobs.empty() || m_shouldTerminate;
+                });*/
                 if (m_shouldTerminate)
                     return;
-                if (!m_highPriorityJobs.empty())
+
+                bool jobFound = m_highPriorityJobs.try_dequeue(job);
+                if (!jobFound)
                 {
-                    job = m_highPriorityJobs.front();
-                    m_highPriorityJobs.pop();
-                }
-                else
-                {
-                    job = m_lowPriorityJobs.front();
-                    m_lowPriorityJobs.pop();
+                    jobFound = m_lowPriorityJobs.try_dequeue(job);
+                    if (!jobFound)
+                        continue;
                 }
             }
             job();

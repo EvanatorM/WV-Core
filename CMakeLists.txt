@@ -72,6 +72,11 @@ target_include_directories(WVCore PUBLIC ${glfw_SOURCE_DIR}/include)
 _add_engine_git_module(STBImage https://github.com/nothings/stb.git f1c79c0)
 target_include_directories(WVCore PUBLIC ${stbimage_SOURCE_DIR})
 
+# Add concurrentqueue
+_add_engine_git_module(concurrentqueue https://github.com/cameron314/concurrentqueue.git v1.0.4)
+target_link_libraries(WVCore PUBLIC concurrentqueue)
+target_include_directories(WVCore PUBLIC ${concurrentqueue_SOURCE_DIR})
+
 # Add platform-specific preprocessor definitions
 if(WIN32)
     target_compile_definitions(WVCore PUBLIC PLATFORM_WINDOWS)
