@@ -1,9 +1,8 @@
 #include <wv/app/App.h>
 
 #include <wv/Logger.h>
-#include <wv/rendering/Renderer.h>
-#include <wv/rendering/Window.h>
-#include <wv/input/Input.h>
+#include <wv/platform/IPlatform.h>
+#include <wv/platform/IGraphicsContext.h>
 #include <iostream>
 
 namespace WillowVox
@@ -13,39 +12,94 @@ namespace WillowVox
 
     void App::Run()
     {
-        Logger::EngineLog("Using WillowVox Engine");     
-        
-        Renderer::Init();
-        Window::InitWindow(appDefaultWindowX, appDefaultWindowY, appWindowName);
-        auto& window = Window::GetInstance();
-        window.SetBackgroundColor(0.1f, 0.1f, 0.1f, 1.0f);
+        Logger::EngineLog("Using WillowVox Engine");
 
-        Input::Init();
-    
+        // Create platform abstraction
+        m_platform = PlatformFactory::CreatePlatform();
+        if (!m_platform)
+        {
+            Logger::EngineError("Failed to create platform abstraction!");
+            return;
+        }
+
+        // Initialize platform
+        if (!m_platform->Initialize())
+        {
+            Logger::EngineError("Failed to initialize platform!");
+            delete m_platform;
+            return;
+        }
+
+        Logger::EngineLog("Running on platform: %s", m_platform->GetPlatformName());
+
+        // Get graphics context
+        m_graphicsContext = m_platform->GetGraphicsContext();
+        if (!m_graphicsContext)
+        {
+            Logger::EngineError("Failed to get graphics context!");
+            m_platform->Shutdown();
+            delete m_platform;
+            return;
+        }
+
+        // Initialize graphics
+        if (!m_graphicsContext->Initialize(appDefaultWindowX, appDefaultWindowY, appWindowName))
+        {
+            Logger::EngineError("Failed to initialize graphics context!");
+            m_platform->Shutdown();
+            delete m_platform;
+            return;
+        }
+
+        m_graphicsContext->SetBackgroundColor(0.1f, 0.1f, 0.1f, 1.0f);
+
+        // Call user's Start function
         Start();
 
-        while(!window.ShouldClose())
+        // Main loop
+        while(!m_graphicsContext->ShouldClose())
         {
             // Calculate deltaTime
-            float frameStartTime = Renderer::GetTime();
-            float currentFrame = frameStartTime;
+            float currentFrame = m_graphicsContext->GetTime();
             m_deltaTime = currentFrame - m_lastFrame;
             m_lastFrame = currentFrame;
 
-            // Clear window
-            window.Clear();
+            // Process platform events
+            m_platform->ProcessEvents();
+
+            // Poll input
+            m_platform->PollInput(m_inputState);
+
+            // Begin frame
+            m_graphicsContext->BeginFrame();
+
+            // Clear
+            m_graphicsContext->Clear(0.1f, 0.1f, 0.1f, 1.0f);
 
             // Client app logic
-            Update();
+            Update(m_inputState);
 
+            // Client rendering
             Render();
 
-            // End-of-frame steps
-            Input::ResetStates();
-            window.SwapBuffers();
-            window.PollEvents();
+            // End frame
+            m_graphicsContext->EndFrame();
+
+            // Swap buffers
+            m_graphicsContext->SwapBuffers();
+
+            // Reset per-frame input states
+            m_platform->ResetInputFrameState(m_inputState);
+
+            // Platform-specific per-frame update
+            m_platform->Update(m_deltaTime);
         }
 
-        Renderer::Shutdown();
+        // Shutdown
+        m_graphicsContext->Shutdown();
+        m_platform->Shutdown();
+        delete m_platform;
+
+        Logger::EngineLog("WillowVox Engine shutdown");
     }
 }
