@@ -6,11 +6,16 @@
 
 namespace WillowVox
 {
+    // Manages loading and providing assets of various types
     class AssetManager
     {
     public:
         static AssetManager& GetInstance();
 
+        // Get asset of type T by name
+        // Loads the asset if not already loaded
+        // Uses AssetLoader<T> to load the asset if needed. If you want to support loading a new asset type T,
+        // you need to create a template specialization of AssetLoader
         template<typename T>
         std::shared_ptr<T> GetAsset(const std::string& name)
         {
@@ -30,6 +35,8 @@ namespace WillowVox
             return provider->GetAsset(name);
         }
 
+        // Manually add asset of type T by name
+        // This is usually not needed unless you want to pre-load assets or load runtime-generated assets
         template<typename T>
         void AddAsset(const std::string& name, std::shared_ptr<T> asset)
         {
