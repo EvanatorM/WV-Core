@@ -13,6 +13,7 @@ namespace WillowVox
         static std::shared_ptr<Shader> FromSource(const char* vertexShaderCode, const char* fragmentShaderCode);
 
         Shader(unsigned int programId) : _programId(programId) {}
+        // Make sure destructor only runs on the main thread
         ~Shader();
 
         void Bind();

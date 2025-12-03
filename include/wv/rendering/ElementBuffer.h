@@ -16,6 +16,7 @@ namespace WillowVox
     public:
         ElementBuffer();
         ElementBuffer(ElementBuffer&& other) noexcept;
+        // Make sure destructor only runs on the main thread
         ~ElementBuffer();
 
         void Bind();

@@ -22,6 +22,7 @@ namespace WillowVox
     public:
         VertexBuffer();
         VertexBuffer(VertexBuffer&& other) noexcept;
+        // Make sure destructor only runs on the main thread
         ~VertexBuffer();
 
         void Bind();

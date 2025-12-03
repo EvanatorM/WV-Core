@@ -9,6 +9,7 @@ namespace WillowVox
     {
     public:
         VertexArrayObject();
+        // Make sure the destructor only runs on the main thread
         ~VertexArrayObject();
 
         void Bind();
