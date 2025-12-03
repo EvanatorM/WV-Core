@@ -1,27 +1,37 @@
 #pragma once
 
 #include <concurrentqueue.h>
+#include <blockingconcurrentqueue.h>
 #include <wv/wvpch.h>
 #include <atomic>
+#include <array>
 
 namespace WillowVox
 {
+    enum class Priority {
+        High = 0,
+        Medium = 1,
+        Low = 2,
+        Count = 3
+    };
+
     class ThreadPool
     {
     public:
-        ThreadPool(int initialJobQueueCapacity);
-        ThreadPool() = default;
+        ThreadPool();
+        ~ThreadPool();
         void Start(int numThreads);
-        void QueueJob(const std::function<void()>& job, bool highPriority = false);
-        void Stop();
+        void Enqueue(const std::function<void()>& job, Priority priority = Priority::Medium);
 
     private:
         void ThreadLoop();
 
-        std::atomic<bool> m_shouldTerminate;
-        std::condition_variable m_mutexCondition;
+        // Queues for each priority
+        std::array<moodycamel::ConcurrentQueue<std::function<void()>>, static_cast<int>(Priority::Count)> m_queues;
+        // Queue to wake up threads when a job is queued
+        moodycamel::BlockingConcurrentQueue<bool> m_signal;
+
         std::vector<std::thread> m_threads;
-        moodycamel::ConcurrentQueue<std::function<void()>> m_lowPriorityJobs;
-        moodycamel::ConcurrentQueue<std::function<void()>> m_highPriorityJobs;
+        std::atomic<bool> m_shouldTerminate;
     };
 }

@@ -4,8 +4,23 @@
 
 namespace WillowVox
 {
-    ThreadPool::ThreadPool(int initialJobQueueCapacity = 0)
-        : m_shouldTerminate(false), m_highPriorityJobs(initialJobQueueCapacity), m_lowPriorityJobs(initialJobQueueCapacity) {}
+    ThreadPool::ThreadPool()
+        : m_shouldTerminate(false) {}
+
+    ThreadPool::~ThreadPool()
+    {
+        m_shouldTerminate = true;
+
+        // Make sure all threads stop
+        for (int i = 0; i < m_threads.size() * 2; i++)
+            m_signal.enqueue(true);
+
+        // Join all threads
+        for (std::thread& activeThread : m_threads)
+            activeThread.join();
+
+        m_threads.clear();
+    }
 
     void ThreadPool::Start(int numThreads)
     {
@@ -13,51 +28,43 @@ namespace WillowVox
             m_threads.emplace_back(std::thread(&ThreadPool::ThreadLoop, this));
     }
 
-    void ThreadPool::QueueJob(const std::function<void()>& job, bool highPriority)
+    void ThreadPool::Enqueue(const std::function<void()>& job, Priority priority)
     {
-        {
-            if (highPriority)
-                m_highPriorityJobs.enqueue(job);
-            else
-                m_lowPriorityJobs.enqueue(job);
-        }
-        //m_mutexCondition.notify_one();
-    }
-
-    void ThreadPool::Stop()
-    {
-        m_shouldTerminate = true;
-
-        m_mutexCondition.notify_all();
-        for (std::thread& activeThread : m_threads)
-            activeThread.join();
-        
-        m_threads.clear();
+        // Enqueue the job
+        m_queues[static_cast<int>(priority)].enqueue(job);
+        // Wake up a worker thread to run the job
+        m_signal.enqueue(true);
     }
 
     void ThreadPool::ThreadLoop()
     {
+        bool token;
         while (true)
         {
-            std::this_thread::sleep_for(std::chrono::milliseconds(5));
+            // Wait for job to be enqueued
+            m_signal.wait_dequeue(token);
+            Logger::Log("Worker thread %d checking for jobs", std::this_thread::get_id());
 
+            // Stop early if necessary
+            if (m_shouldTerminate)
+                return;
+
+            // Get job to run
             std::function<void()> job;
-            {
-                /*m_mutexCondition.wait(lock, [this] {
-                    return !m_highPriorityJobs.() || !m_lowPriorityJobs.empty() || m_shouldTerminate;
-                });*/
-                if (m_shouldTerminate)
-                    return;
+            bool found = false;
 
-                bool jobFound = m_highPriorityJobs.try_dequeue(job);
-                if (!jobFound)
+            for (int i = 0; i < static_cast<int>(Priority::Count); i++)
+            {
+                if (m_queues[static_cast<int>(Priority::High)].try_dequeue(job))
                 {
-                    jobFound = m_lowPriorityJobs.try_dequeue(job);
-                    if (!jobFound)
-                        continue;
+                    found = true;
+                    break;
                 }
             }
-            job();
+
+            // Run job if found
+            if (found && job)
+                job();
         }
     }
 }
