@@ -9,6 +9,9 @@ namespace WillowVox
     class App
     {
     public:
+        App() = default;
+        virtual ~App() = default;
+
         void Run();
 
         virtual void Start() {}

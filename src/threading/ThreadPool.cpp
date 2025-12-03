@@ -43,8 +43,7 @@ namespace WillowVox
         {
             // Wait for job to be enqueued
             m_signal.wait_dequeue(token);
-            Logger::Log("Worker thread %d checking for jobs", std::this_thread::get_id());
-
+            
             // Stop early if necessary
             if (m_shouldTerminate)
                 return;
@@ -55,7 +54,7 @@ namespace WillowVox
 
             for (int i = 0; i < static_cast<int>(Priority::Count); i++)
             {
-                if (m_queues[static_cast<int>(Priority::High)].try_dequeue(job))
+                if (m_queues[i].try_dequeue(job))
                 {
                     found = true;
                     break;
