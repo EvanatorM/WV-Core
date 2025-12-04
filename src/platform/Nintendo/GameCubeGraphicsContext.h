@@ -36,8 +36,16 @@ namespace WillowVox
     private:
         bool m_initialized = false;
         bool m_shouldClose = false;
+        bool m_vsyncEnabled = true;
         int m_width = 640;
         int m_height = 480;
         float m_clearColor[4] = {0.1f, 0.1f, 0.1f, 1.0f};
+        float m_startTime = 0.0f;
+
+        // GX-specific framebuffer (using void* to avoid including libogc headers)
+        void* m_fifoBuffer = nullptr;        // GX FIFO buffer
+        void* m_frameBuffer[2] = {nullptr, nullptr};  // Double buffering
+        int m_currentFB = 0;
+        void* m_renderMode = nullptr;        // GXRModeObj*
     };
 }

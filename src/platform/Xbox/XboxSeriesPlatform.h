@@ -8,7 +8,7 @@ namespace WillowVox
     class XboxSeriesGraphicsContext;
 
     /**
-     * Xbox Series X/S Platform (Dev Mode / GDK)
+     * Xbox Series X/S Platform (UWP with XInput)
      *
      * Controller: Xbox Series Controller (standard Xbox layout)
      * - Left Stick: Movement
@@ -22,8 +22,8 @@ namespace WillowVox
      * - Menu (≡): MenuOpen
      * - View (::): MenuBack
      *
-     * Graphics: DirectX 12 (via GDK)
-     * Input: GameInput API or XInput
+     * Graphics: OpenGL ES via ANGLE (translates to DirectX)
+     * Input: XInput API
      */
     class XboxSeriesPlatform : public IPlatform
     {
@@ -43,7 +43,24 @@ namespace WillowVox
         InputDeviceType GetPrimaryInputDevice() const override;
         bool HasFeature(const char* featureName) const override;
 
+        void SetVibration(int playerIndex, float lowFrequency, float highFrequency) override;
+        void StopVibration(int playerIndex) override;
+
     private:
         std::unique_ptr<XboxSeriesGraphicsContext> m_graphicsContext;
+
+        // XInput gamepad state
+        uint16_t m_buttons = 0;
+        uint16_t m_prevButtons = 0;
+        float m_lstickX = 0.0f;
+        float m_lstickY = 0.0f;
+        float m_rstickX = 0.0f;
+        float m_rstickY = 0.0f;
+        float m_leftTrigger = 0.0f;
+        float m_rightTrigger = 0.0f;
+
+        void UpdateGamepadInput(InputState& outInputState);
+        float NormalizeAxis(int16_t value) const;
+        float NormalizeTrigger(uint8_t value) const;
     };
 }

@@ -36,5 +36,16 @@ namespace WillowVox
 
     private:
         std::unique_ptr<WiiUGraphicsContext> m_graphicsContext;
+
+        // Wii U GamePad/Pro Controller input state
+        uint32_t m_buttons = 0;
+        uint32_t m_prevButtons = 0;
+        float m_lstickX = 0.0f;
+        float m_lstickY = 0.0f;
+        float m_rstickX = 0.0f;
+        float m_rstickY = 0.0f;
+
+        void UpdateGamepadInput(InputState& outInputState);
+        float NormalizeAxis(float value, float min, float max) const;
     };
 }

@@ -260,11 +260,14 @@ namespace WillowVox
     {
         // Platform-specific user data paths
 #if defined(PLATFORM_WINDOWS)
-        static const char* path = "./userdata";  // TODO: Use AppData
+        // Windows: %APPDATA%\WillowVox
+        static const char* path = "%APPDATA%\\WillowVox";
 #elif defined(PLATFORM_MACOS)
-        static const char* path = "./userdata";  // TODO: Use ~/Library/Application Support
+        // macOS: ~/Library/Application Support/WillowVox
+        static const char* path = "~/Library/Application Support/WillowVox";
 #else
-        static const char* path = "./userdata";  // TODO: Use ~/.local/share
+        // Linux: ~/.local/share/WillowVox
+        static const char* path = "~/.local/share/WillowVox";
 #endif
         return path;
     }
@@ -292,5 +295,26 @@ namespace WillowVox
         if (strcmp(featureName, "gamepad") == 0) return true;
         if (strcmp(featureName, "filesystem") == 0) return true;
         return false;
+    }
+
+    void DesktopPlatform::SetVibration(int playerIndex, float lowFrequency, float highFrequency)
+    {
+#if defined(PLATFORM_WINDOWS)
+        // Windows: Use XInput for gamepad vibration
+        // Note: This requires linking against Xinput.lib
+        // For now, GLFW doesn't expose vibration API, so we'd need platform-specific code
+        // This is a placeholder - actual implementation would use XInput directly
+        Logger::EngineLog("Vibration requested (Windows XInput not yet implemented)");
+#else
+        // Linux/macOS: GLFW doesn't support vibration
+        // Would need to use platform-specific APIs (evdev on Linux, IOKit on macOS)
+        Logger::EngineLog("Vibration not supported on this platform");
+#endif
+    }
+
+    void DesktopPlatform::StopVibration(int playerIndex)
+    {
+        // Stop vibration by setting both motors to 0
+        SetVibration(playerIndex, 0.0f, 0.0f);
     }
 }

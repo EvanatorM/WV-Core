@@ -10,11 +10,18 @@ namespace WillowVox
     /**
      * PlayStation 4 Platform (OpenOrbis Homebrew)
      *
-     * Controller: DualShock 4 (same mapping as PS3)
-     * Graphics: GNM (low-level) or Gnm wrapper
-     * Input: libSceUserService + libScePad
+     * Controller: DualShock 4
+     * - Cross (X): Action1 / Jump
+     * - Circle: Action2 / MenuBack
+     * - Square: Action3
+     * - Triangle: Action4
+     * - L1/R1: Cycle items
+     * - L2/R2: Crouch/Sprint
+     * - Options: MenuOpen
+     * - TouchPad: Special action
      *
-     * See PS3Platform for controller mapping (similar button layout)
+     * Graphics: OpenGL via piglet (easier than GNM)
+     * Input: libSceUserService + libScePad (OpenOrbis)
      */
     class PS4Platform : public IPlatform
     {
@@ -34,8 +41,27 @@ namespace WillowVox
         InputDeviceType GetPrimaryInputDevice() const override;
         bool HasFeature(const char* featureName) const override;
 
+        void SetVibration(int playerIndex, float lowFrequency, float highFrequency) override;
+        void StopVibration(int playerIndex) override;
+
     private:
         std::unique_ptr<PS4GraphicsContext> m_graphicsContext;
-        // PS4-specific pad handling (similar to PS3)
+
+        // PS4-specific handles
+        int m_userId = 0;
+        int m_padHandle = -1;
+
+        // Pad state
+        uint32_t m_buttons = 0;
+        uint32_t m_prevButtons = 0;
+        uint8_t m_lstickX = 128;
+        uint8_t m_lstickY = 128;
+        uint8_t m_rstickX = 128;
+        uint8_t m_rstickY = 128;
+        uint8_t m_l2Value = 0;
+        uint8_t m_r2Value = 0;
+
+        void UpdateGamepadInput(InputState& outInputState);
+        float NormalizeAxis(uint8_t value) const;
     };
 }

@@ -44,5 +44,19 @@ namespace WillowVox
 
     private:
         std::unique_ptr<GameCubeGraphicsContext> m_graphicsContext;
+
+        // GameCube controller input state
+        uint16_t m_buttons = 0;
+        uint16_t m_prevButtons = 0;
+        float m_mainStickX = 0.0f;
+        float m_mainStickY = 0.0f;
+        float m_cStickX = 0.0f;
+        float m_cStickY = 0.0f;
+        float m_leftTrigger = 0.0f;
+        float m_rightTrigger = 0.0f;
+
+        void UpdateGamepadInput(InputState& outInputState);
+        float NormalizeAxis(int8_t value) const;
+        float NormalizeTrigger(uint8_t value) const;
     };
 }

@@ -2,6 +2,7 @@
 
 #include <wv/platform/IPlatform.h>
 #include <memory>
+#include <vector>
 
 namespace WillowVox
 {
@@ -38,8 +39,51 @@ namespace WillowVox
         bool HasFeature(const char* featureName) const override;
 
     private:
+        struct TouchPoint
+        {
+            int32_t id;
+            float x, y;
+            float startX, startY;
+            bool active;
+        };
+
         std::unique_ptr<iOSGraphicsContext> m_graphicsContext;
-        // Touch input tracking (similar to Android)
-        // Implementation details omitted for brevity
+
+        // Touch tracking
+        static constexpr int MAX_TOUCH_POINTS = 10;
+        TouchPoint m_touchPoints[MAX_TOUCH_POINTS] = {};
+
+        // Virtual control regions (normalized 0-1)
+        struct VirtualControl
+        {
+            float x, y, radius;
+            InputAction action;
+            bool isJoystick;
+        };
+
+        std::vector<VirtualControl> m_virtualControls;
+
+        // Input state
+        float m_joystickX = 0.0f;
+        float m_joystickY = 0.0f;
+        int m_joystickTouchId = -1;
+
+        float m_lookDeltaX = 0.0f;
+        float m_lookDeltaY = 0.0f;
+        int m_lookTouchId = -1;
+
+        bool m_buttonStates[static_cast<int>(InputAction::Count)] = {};
+        bool m_buttonPrevStates[static_cast<int>(InputAction::Count)] = {};
+
+        int m_screenWidth = 1920;
+        int m_screenHeight = 1080;
+
+        // Helper methods
+        void SetupVirtualControls();
+        void ProcessTouchInput(InputState& outInputState);
+        TouchPoint* GetTouchPoint(int32_t id);
+        TouchPoint* AllocateTouchPoint(int32_t id);
+        void ReleaseTouchPoint(int32_t id);
+        bool IsInsideCircle(float x, float y, float cx, float cy, float radius) const;
     };
 }

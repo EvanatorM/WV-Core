@@ -5,10 +5,10 @@
 namespace WillowVox
 {
     /**
-     * PS4 Graphics Context (GNM)
+     * PS4 Graphics Context (OpenGL ES via piglet)
      *
-     * PS4 uses GNM (low-level graphics API) via OpenOrbis SDK.
-     * This is a template implementation.
+     * PS4 uses OpenGL ES 2.0 via piglet library (OpenOrbis SDK).
+     * This is easier than GNM and provides good compatibility.
      */
     class PS4GraphicsContext : public IGraphicsContext
     {
@@ -36,8 +36,16 @@ namespace WillowVox
     private:
         bool m_initialized = false;
         bool m_shouldClose = false;
+        bool m_vsyncEnabled = true;
         int m_width = 1920;
         int m_height = 1080;
         float m_clearColor[4] = {0.1f, 0.1f, 0.1f, 1.0f};
+        float m_startTime = 0.0f;
+
+        // PS4-specific handles (using void* to avoid including headers)
+        int m_videoHandle = -1;
+        void* m_eglDisplay = nullptr;
+        void* m_eglSurface = nullptr;
+        void* m_eglContext = nullptr;
     };
 }

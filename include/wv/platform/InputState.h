@@ -62,6 +62,8 @@ namespace WillowVox
         Touchscreen,
         Gamepad,
         WiiRemote,
+        GameCubeController,
+        WiiUGamePad,
         PSController,
         XboxController,
         SwitchController

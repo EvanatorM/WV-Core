@@ -3,6 +3,9 @@
 #include <wv/Logger.h>
 #include <wv/platform/IPlatform.h>
 #include <wv/platform/IGraphicsContext.h>
+#include <wv/input/InputManager.h>
+#include <wv/input/GamepadInput.h>
+#include <wv/input/TouchInput.h>
 #include <iostream>
 
 namespace WillowVox
@@ -69,6 +72,12 @@ namespace WillowVox
 
             // Poll input
             m_platform->PollInput(m_inputState);
+
+            // Update centralized input managers
+            InputManager::SetInputState(&m_inputState);
+            GamepadInput::SetInputState(&m_inputState);
+            GamepadInput::s_platform = m_platform;  // Set platform for vibration
+            TouchInput::SetInputState(&m_inputState);
 
             // Begin frame
             m_graphicsContext->BeginFrame();

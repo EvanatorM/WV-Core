@@ -48,6 +48,9 @@ namespace WillowVox
 
         bool HasFeature(const char* featureName) const override;
 
+        void SetVibration(int playerIndex, float lowFrequency, float highFrequency) override;
+        void StopVibration(int playerIndex) override;
+
     private:
         std::unique_ptr<DesktopGraphicsContext> m_graphicsContext;
 

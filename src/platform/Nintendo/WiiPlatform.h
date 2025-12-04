@@ -43,6 +43,17 @@ namespace WillowVox
 
     private:
         std::unique_ptr<WiiGraphicsContext> m_graphicsContext;
-        // Wii-specific input handling
+
+        // Wiimote + Nunchuk input state
+        uint32_t m_buttons = 0;
+        uint32_t m_prevButtons = 0;
+        float m_nunchukX = 0.0f;
+        float m_nunchukY = 0.0f;
+        float m_irX = 0.0f;
+        float m_irY = 0.0f;
+        bool m_irValid = false;
+
+        void UpdateWiimoteInput(InputState& outInputState);
+        float NormalizeAxis(uint8_t value, uint8_t center = 128) const;
     };
 }

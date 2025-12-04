@@ -5,10 +5,10 @@
 namespace WillowVox
 {
     /**
-     * iOS Graphics Context (Metal or OpenGL ES)
+     * iOS Graphics Context (OpenGL ES)
      *
-     * iOS can use Metal (preferred) or OpenGL ES for compatibility.
-     * This is a template implementation.
+     * Uses OpenGL ES 3.0 with EAGLContext and CAEAGLLayer.
+     * Provides compatibility for cross-platform OpenGL code.
      */
     class iOSGraphicsContext : public IGraphicsContext
     {
@@ -36,8 +36,17 @@ namespace WillowVox
     private:
         bool m_initialized = false;
         bool m_shouldClose = false;
+        bool m_vsyncEnabled = true;
         int m_width = 0;
         int m_height = 0;
         float m_clearColor[4] = {0.1f, 0.1f, 0.1f, 1.0f};
+        float m_startTime = 0.0f;
+
+        // iOS-specific OpenGL ES handles (using void* to avoid including Objective-C headers)
+        void* m_eaglContext = nullptr;       // EAGLContext*
+        void* m_eaglLayer = nullptr;         // CAEAGLLayer*
+        unsigned int m_colorRenderbuffer = 0;
+        unsigned int m_depthRenderbuffer = 0;
+        unsigned int m_framebuffer = 0;
     };
 }

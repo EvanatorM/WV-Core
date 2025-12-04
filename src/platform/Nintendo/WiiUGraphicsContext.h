@@ -36,8 +36,16 @@ namespace WillowVox
     private:
         bool m_initialized = false;
         bool m_shouldClose = false;
+        bool m_vsyncEnabled = true;
         int m_width = 1920;
         int m_height = 1080;
         float m_clearColor[4] = {0.1f, 0.1f, 0.1f, 1.0f};
+        float m_startTime = 0.0f;
+
+        // GX2-specific (using void* to avoid including wut headers)
+        void* m_colorBuffer = nullptr;      // GX2ColorBuffer*
+        void* m_depthBuffer = nullptr;      // GX2DepthBuffer*
+        void* m_contextState = nullptr;     // GX2ContextState*
+        int m_currentTV = 0;                // TV scan buffer index
     };
 }

@@ -49,6 +49,11 @@ namespace WillowVox
         // Special platform features
         virtual bool HasFeature(const char* featureName) const = 0;
 
+        // Vibration/Rumble (controllers, gamepads)
+        // Not all platforms support this, default implementation is no-op
+        virtual void SetVibration(int playerIndex, float lowFrequency, float highFrequency) {}
+        virtual void StopVibration(int playerIndex) {}
+
         // Optional: Some platforms may need special per-frame updates
         virtual void Update(float deltaTime) {}
     };
