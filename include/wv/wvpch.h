@@ -5,6 +5,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <vector>
+#include <array>
 #include <queue>
 #include <unordered_map>
 #include <string>

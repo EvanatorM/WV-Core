@@ -46,22 +46,22 @@ namespace WillowVox
                 glVertexAttribPointer(index, attribSize, GL_HALF_FLOAT, normalized, vertexSize, (void*)offset);
                 break;
             case VertexBufferAttribType::INT32:
-                glVertexAttribPointer(index, attribSize, GL_INT, normalized, vertexSize, (void*)offset);
+                glVertexAttribIPointer(index, attribSize, GL_INT, vertexSize, (void*)offset);
                 break;
             case VertexBufferAttribType::UINT32:
-                glVertexAttribPointer(index, attribSize, GL_UNSIGNED_INT, normalized, vertexSize, (void*)offset);
+                glVertexAttribIPointer(index, attribSize, GL_UNSIGNED_INT, vertexSize, (void*)offset);
                 break;
             case VertexBufferAttribType::INT16:
-                glVertexAttribPointer(index, attribSize, GL_SHORT, normalized, vertexSize, (void*)offset);
+                glVertexAttribIPointer(index, attribSize, GL_SHORT, vertexSize, (void*)offset);
                 break;
             case VertexBufferAttribType::UINT16:
-                glVertexAttribPointer(index, attribSize, GL_UNSIGNED_SHORT, normalized, vertexSize, (void*)offset);
+                glVertexAttribIPointer(index, attribSize, GL_UNSIGNED_SHORT, vertexSize, (void*)offset);
                 break;
             case VertexBufferAttribType::INT8:
-                glVertexAttribPointer(index, attribSize, GL_BYTE, normalized, vertexSize, (void*)offset);
+                glVertexAttribIPointer(index, attribSize, GL_BYTE, vertexSize, (void*)offset);
                 break;
             case VertexBufferAttribType::UINT8:
-                glVertexAttribPointer(index, attribSize, GL_UNSIGNED_BYTE, normalized, vertexSize, (void*)offset);
+                glVertexAttribIPointer(index, attribSize, GL_UNSIGNED_BYTE, vertexSize, (void*)offset);
                 break;
         }
         glEnableVertexAttribArray(index);
