@@ -12,6 +12,9 @@
 #include <wv/events/EventDispatcher.h>
 
 #include <wv/input/Input.h>
+#include <wv/input/InputManager.h>
+#include <wv/input/GamepadInput.h>
+#include <wv/input/TouchInput.h>
 
 #include <wv/rendering/Camera.h>
 #include <wv/rendering/Renderer.h>

@@ -22,6 +22,26 @@ endmacro()
 # Add glad
 _add_engine_git_module(glad https://github.com/Dav1dde/glad.git 5bf3eda)
 
+# Platform-specific sources
+set(PLATFORM_SOURCES "")
+
+if(PLATFORM_WINDOWS OR PLATFORM_LINUX OR PLATFORM_MACOS)
+    list(APPEND PLATFORM_SOURCES
+        src/platform/Desktop/DesktopPlatform.cpp
+        src/platform/Desktop/DesktopGraphicsContext.cpp
+    )
+    # Desktop needs GLAD
+    list(APPEND PLATFORM_SOURCES ${glad_SOURCE_DIR}/src/glad.c)
+endif()
+
+# NOTE: Console and mobile platforms need their respective SDKs and toolchains
+# These are provided as templates and will compile when the appropriate SDK is available
+
+# Platform factory (always included)
+list(APPEND PLATFORM_SOURCES
+    src/platform/PlatformFactory.cpp
+)
+
 # Create library
 add_library(WVCore STATIC
     src/Logger.cpp
@@ -43,7 +63,8 @@ add_library(WVCore STATIC
 
     src/threading/ThreadPool.cpp
 
-    ${glad_SOURCE_DIR}/src/glad.c
+    # Platform abstraction sources
+    ${PLATFORM_SOURCES}
 )
 
 #target_precompile_headers(WVCore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/wv/wvpch.h)
